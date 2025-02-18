@@ -1,0 +1,28 @@
+{
+  "Score": 15678,
+  "Evaluated log lines": 10540,
+  "Exceeds 5ms on": 176,
+  "Highest time taken": "15.2 ms",
+  "Remaining Budgets": {
+    "Advertiser 1458": {
+      "Budget": 0.000,
+      "Evaluated log lines": 2160
+    },
+    "Advertiser 3358": {
+      "Budget": 78.320,
+      "Evaluated log lines": 2240
+    },
+    "Advertiser 3386": {
+      "Budget": 0.000,
+      "Evaluated log lines": 2080
+    },
+    "Advertiser 3427": {
+      "Budget": 0.000,
+      "Evaluated log lines": 1940
+    },
+    "Advertiser 3476": {
+      "Budget": 1248.760,
+      "Evaluated log lines": 2280
+    }
+  }
+}
