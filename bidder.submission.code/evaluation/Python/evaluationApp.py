@@ -1,13 +1,10 @@
 #!/usr/bin/python
 # -*- coding:utf8 -*-
 import csv
-
-import bidRequest
-
-from bid import Bid
-
+import time
 import argparse
-
+from bid import Bid
+import bidRequest
 
 class TestData:
     def __init__(self):
@@ -18,20 +15,19 @@ class TestData:
         self.conversions = 0
         self.weight = 0
 
-
 class BudgetInfo:
     def __init__(self, budget, log_lines):
         self.budget = budget
         self.log_lines = log_lines
 
-
 class TestDataParser:
     def __init__(self, file_path):
         self.file_path = file_path
-        self.file = open(file_path, 'r')
+        self.file = open(file_path, 'r', encoding='utf-8')
         self.reader = csv.reader(self.file, delimiter='\t')
 
     def read_next_test_data(self):
+        line = None
         try:
             line = next(self.reader)
             bid_request = bidRequest.BidRequest()
@@ -67,6 +63,12 @@ class TestDataParser:
             return test_data
         except StopIteration:
             return None
+        except ValueError as e:
+            print(f"ValueError: {e} on line: {line}")
+            raise
+        except UnicodeDecodeError as e:
+            print(f"UnicodeDecodeError: {e} on line: {line}")
+            raise
 
     @staticmethod
     def get_weight(advertiser_id):
@@ -81,7 +83,6 @@ class TestDataParser:
 
     def close(self):
         self.file.close()
-
 
 def initialize_budgets1():
     return {
@@ -114,17 +115,17 @@ def __evaluate(args):
     print("Starting the bidding process...")
     try:
         print(f"Evaluating for Budget Set: {args.budget_set}")
-        parser = TestDataParser('/Users/anuragpandey/Downloads/evaluation/test.dataset.10L.txt')
+        parser = TestDataParser('C:/Users/aryan/Downloads/adobe-hackathon Team Imagining Reality/dataset/test.dataset.10L.txt')
         bid = Bid()
-        if(args.budget_set == 1):
+        if args.budget_set == 1:
             budgets = initialize_budgets1()
-        elif(args.budget_set == 2):
+        elif args.budget_set == 2:
             budgets = initialize_budgets2()
-        elif(args.budget_set == 3):
-            budgets = initialize_budgets3()  
+        elif args.budget_set == 3:
+            budgets = initialize_budgets3()
         else:
             print("Invalid budget set!")
-            raise ValueError("Invalid budget set!") 
+            raise ValueError("Invalid budget set!")
         exhausted_budgets = {}
         score = 0
         log_lines = 0
@@ -136,7 +137,6 @@ def __evaluate(args):
             if budget_info.budget <= 0:
                 continue
 
-            import time
             start_time = time.time()
             bid_price = bid.get_bid_price(test_data.bid_request)
             end_time = time.time()
@@ -155,8 +155,7 @@ def __evaluate(args):
         print(f"Score: {score:,}, Evaluated log lines: {log_lines:,}")
         print("Remaining Budgets:")
         for advertiser_id, budget_info in budgets.items():
-            print(
-                f"Advertiser {advertiser_id}: {budget_info.budget:.3f}, Evaluated log lines: {budget_info.log_lines:,}")
+            print(f"Advertiser {advertiser_id}: {budget_info.budget:.3f}, Evaluated log lines: {budget_info.log_lines:,}")
 
         parser.close()
         print("Bidding process completed successfully.")
@@ -164,6 +163,8 @@ def __evaluate(args):
         print("Failed to create TestDataParser")
     except ValueError:
         print("Failed to parse integer")
+    except UnicodeDecodeError:
+        print("Failed to decode file")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Budget Set Input")
@@ -172,4 +173,4 @@ if __name__ == "__main__":
     __evaluate(args)
 
 
-        
+
