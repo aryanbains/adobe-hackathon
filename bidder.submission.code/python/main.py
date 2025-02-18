@@ -1,35 +1,26 @@
-# main.py
+import sys
 from bidrequest import BidRequest
 from bid import Bid
 
-def main():
-    # Create a sample BidRequest with example data.
+def run_bidding():
+    # Create a sample BidRequest
     sample_bid_request = BidRequest(
-        bidId="sample_bid_001",
-        timestamp="20250217123000000",
-        visitorId="visitor_001",
-        userAgent="Mozilla/5.0",
-        ipAddress="192.168.1.1",
-        region="1",
-        city="1",
-        adExchange="2",
-        domain="sampledomain",
-        url="http://sampleurl.com",
-        anonymousURLID=None,
-        adSlotID="12345",
-        adSlotWidth="300",
-        adSlotHeight="250",
-        adSlotVisibility="FirstView",
-        adSlotFormat="Fixed",
-        adSlotFloorPrice="100",  # Example floor price
-        creativeID="creative_001",
-        advertiserId="1458",
-        userTags="tag1,tag2"
+        bidId="sample001",
+        adSlotFloorPrice="120"
     )
-    
     bidder = Bid()
-    bid_price = bidder.getBidPrice(sample_bid_request)
-    print("Bid Price:", bid_price)
+    price = bidder.getBidPrice(sample_bid_request)
+    print("Bid Price:", price)
+
+def run_aggregated_stats():
+    # Import the aggregator function and run it
+    from aggregate_stats import aggregate_all_data
+    df = aggregate_all_data(dataset_dir="../dataset")
+    print("\n----- Aggregated Stats by AdvertiserID -----")
+    print(df.to_string(index=False))
 
 if __name__ == "__main__":
-    main()
+    if "--agg" in sys.argv:
+        run_aggregated_stats()
+    else:
+        run_bidding()
